@@ -1,0 +1,76 @@
+Livewire - Livewire allows us to write highly interactive web apps with PHP, Laravel, and Blade. No more bending the knee to a client-side JavaScript framework.
+
+Installation
+    - composer require livewire/livewire
+
+php artisan make:seeder SeederName
+$this->call($class); // Database Seeder
+php artisan db:seed
+
+Public config file 
+php artisan livewire:publish --config
+
+Livewire: Components
+    - Reusable UI Elements
+    - php artisan livewire:make ComponentName
+    - render() - responsibility to handle the livewire component view
+    - php artisan livewire:make directory.ComponentName
+    - Full page standalone = Route::get('/tasks/create', \App\Livewire\Tasks\TaskCreate::class);
+    - Livewire page component layout view not found: [components.layouts.app] = remove "components" on config/livewire.php
+    - #[Layout('layouts.app')] put this on youe livewire component that does not need change on config/livewire.php
+    - view()->layout('layouts.app')
+    - view()->title('Create Task - Livewire')
+
+Properties in livewire
+    - Public properties in Livewire are automatically made available to the view. No need to explicitly pass them into the view (although you can if you want).
+    - useful for data binding
+    - Create Property = public $property_name;
+    - mount() = accepting parameters and initializing the state of your component
+
+    - $tasks -> $this->tasks -> {{$tasks}} on blade file
+
+    -  wire:key means acts as a reference point for Livewire's DOM diffing system. Useful for adding/removing elements, and keeping track of lists.
+    - ->with()
+    - wire:model="propertyName" means help of data binding
+    - wire:click="functionNameOnController()" is likely JavaScript DOM Event that what do if you clicked the button
+    - Route parameters: mount($parametersBasedOnRoute)
+    - Model Binding: mount(Task $task)
+    - x-text="$wire.name.length"
+
+Forms, Validation & Loaders in Livewire Components
+    - #[Rule('required')]
+    - in function you make validation: $this->validate();
+    - #[Rule('required|max:255')] PS: should be import "use Livewire\Attributes\Rule" on your Livewire Controller
+    - Live Validation: wire:model.live or .blur
+    - Loading indicator: wire:loading
+
+Introduction to Actions in Livewire
+    - Action means handle user interaction and directions and perform Server Side Side without refreshing the entire page-
+    - wire:confirm directive is used to display a confirmation alert to user before perform the action
+    - wire:keydown - Triggered when a key is pressed down
+    - https://livewire.laravel.com/docs/actions
+
+How to Easily Output Flash Messages in Livewire
+    - session()->flash('message', 'Task successfully created')
+
+Introduction to Events in Livewire
+    - Livewire offers a robust event system that you can use to communicate between different components on the page
+    - $this->dispatch() 
+    - updateTimestamp()
+    - #[On('task-updated')]
+
+Introduction to Lifecycle Hooks in Livewire
+    - special method that allow you to perform certain action at different stage of a livewire Lifecycle
+    - boot - Runs on every request, immediately after the component is instantiated, but before any other lifecycle methods are called
+    - booted - Runs on every request, after the component is mounted or hydrated, but before any update methods are called
+    - mount - Runs once, immediately after the component is instantiated, but before render() is called. This is only called once on initial page load and never called again, even on component refreshes
+    - hydrate - Runs on every subsequent request, after the component is hydrated, but before an action is performed, or render() is called
+    - hydrateFoo - Runs after a property called $foo is hydrated
+    - dehydrate - Runs on every subsequent request, before the component is dehydrated, but after render() is called
+    - dehydrateFoo - Runs before a property called $foo is dehydrated
+    - updating - Runs before any update to the Livewire component's data (Using wire:model, not directly inside PHP)
+    - updated - Runs after any update to the Livewire component's data (Using wire:model, not directly inside PHP)
+    - updatingFoo - Runs before a property called $foo is updated. Array properties have an additional $key argument passed to this function to specify changing element inside array, like updatingArray($value, $key)
+    - updatedFoo - Runs after a property called $foo is updated. Array properties have additional $key argument as above
+    - updatingFooBar - Runs before updating a nested property bar on the $foo property or a multiword property such as $fooBar or $foo_bar
+    - updatedFooBar - Runs after updating a nested property bar on the $foo property or a multiword property such as $fooBar or $foo_bar
